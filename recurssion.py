@@ -41,7 +41,7 @@ def load_sequence(seq_id):
 def motif(dictionary):
 
     match = {key: [] for key in dictionary}
-    protein_motif = r'(?=(N[^P][ST][^P]))'
+    protein_motif = rf'{sys.argv[2]}'
     id_list = [key for key in dictionary.keys()]
     for key in id_list:
         for ids in re.finditer(protein_motif, dictionary[key]):
