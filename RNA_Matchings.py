@@ -4,4 +4,8 @@ class Graph:
               self.lab = label
               self.adjacent = {}
               self.basepair = {}
-    def __init__(self):
+
+    def __init__(self, string):
+        self.string = string
+
+        for s in string:
