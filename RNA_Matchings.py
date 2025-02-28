@@ -22,21 +22,32 @@ class Graph:
         self.string = string
         self.graph = []
     def AdjacentEdges(self, string):
-    #self.graph dict will have keys as nodes and value as edges
+    #self.graph list will have nodes linked to edges
 
-        for i in range(len(string)+1):
+        for i in range(len(string)):
             cur = self.node(string[i])
+            self.graph.append(cur)
             if i == 0:
                 cur.adjacent.append(string[i+1])
             else:
                 cur.adjacent.append(string[i+1])
                 cur.adjacent.append(string[i-1])
 
-        return self.graph
+
     def BasepairEdges(self, string):
 
         bs_pair = { 'A': 'U', 'G': 'C', 'C':'G', 'U': 'A'}
-
+        #iterate over node object in the self.graph list
         for base in self.graph:
+            #iterate over the string i to check for any base pair matching
+            #if base pair matching is found create an basepair edge
+
+            for i in range(len(string)):
+                if bs_pair[base.label] == string[i]:
+                    base.basepair.append(i)
+
+
+
+
 
 
