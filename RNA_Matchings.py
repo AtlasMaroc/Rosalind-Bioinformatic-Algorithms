@@ -14,11 +14,29 @@ class Graph:
     #object node with the label and the corresponding edges
     class node(object):
           def __init__(self, label):
-              self.lab = label
-              self.adjacent = {}
-              self.basepair = {}
+              self.label = label
+              self.adjacent = []
+              self.basepair = []
 
     def __init__(self, string):
         self.string = string
+        self.graph = []
+    def AdjacentEdges(self, string):
+    #self.graph dict will have keys as nodes and value as edges
 
-        for s in string:
+        for i in range(len(string)+1):
+            cur = self.node(string[i])
+            if i == 0:
+                cur.adjacent.append(string[i+1])
+            else:
+                cur.adjacent.append(string[i+1])
+                cur.adjacent.append(string[i-1])
+
+        return self.graph
+    def BasepairEdges(self, string):
+
+        bs_pair = { 'A': 'U', 'G': 'C', 'C':'G', 'U': 'A'}
+
+        for base in self.graph:
+
+
