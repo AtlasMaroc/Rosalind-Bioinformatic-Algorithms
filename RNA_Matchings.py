@@ -9,7 +9,9 @@ this algorithm is used to find the perfect matching for a given RNA string
 #4: bonding graph, adjacency list
 #5: define the variables I will be working with such as Kn and Pn
 #6: undirected cyclic graph
-
+#7: mathematical equation to find the possible number of perfect matching
+   #use a recursive function to do so
+   #possibily use the length of basepaire edge to compute the number of possibility
 class Graph:
     #object node with the label and the corresponding edges
     class node(object):
@@ -20,19 +22,20 @@ class Graph:
 
     def __init__(self, string):
         self.string = string
-        self.graph = []
+        self.graph = self.create_nodes(string)
+        self.AdjacentEdges(string)
+        self.BasepairEdges(string)
+    def create_nodes(self, string):
+        return [self.node(char) for char in string]
     def AdjacentEdges(self, string):
     #self.graph list will have nodes linked to edges
 
-        for i in range(len(string)):
-            cur = self.node(string[i])
-            self.graph.append(cur)
-            if i == 0:
-                cur.adjacent.append(string[i+1])
-            else:
-                cur.adjacent.append(string[i+1])
-                cur.adjacent.append(string[i-1])
+        for i,node in enumerate(self.graph):
 
+            if i > 0:
+                node.adjacent.append(self.graph[i-1])
+            if i < len(string)-1:
+                node.adjacent.append(self.graph[i+1])
 
     def BasepairEdges(self, string):
 
