@@ -1,7 +1,7 @@
 """
 this algorithm is used to find the perfect matching for a given RNA string
 """
-from Bio import SeqIO
+import timeit
 from math import factorial
 class Graph:
     #object node with the label and the corresponding edges
@@ -68,6 +68,7 @@ def main(value):
      inst_graph.AdjacentEdges(value)
      inst_graph.BasepairEdges(value)
      num_poss = inst_graph.perfect_matching()
-     #print(inst_graph.graph[0].basepair)
      print(num_poss)
+     print(timeit.timeit())
+
 main('AAAGCCUGCAGGGGGUCCUUGUCGCCUAAGCCUUCAAUACAAUGAGUGGCCCGUAAGUACCAUGUUCUGA')
