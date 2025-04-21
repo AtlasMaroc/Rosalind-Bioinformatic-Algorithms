@@ -1,62 +1,40 @@
-import re
-
+from hmmlearn import hmm
+import numpy as np
+import pandas as pd
 def input_file(file):
+
 
     open_file = open(file, 'r')
     lines = [items.strip() for items in open_file.readlines()]
-    return lines
+    dna_strand = ''.join(lines)
+    return dna_strand
+# Number of states (eight as per requirement)
+n_states = 8
+# Number of possible emissions (nucleotides A, T, C, G)
+n_observations = 4  # Assume A, T, C, G are encoded as 0, 1, 2, 3
 
-def dictionnary(lines):
+model = hmm.CategoricalHMM(n_components=8,  n_iter=100, tol=1e-4, random_state=42, init_params='')
+model.startprob_ = np.full(n_states, 1 / n_states)  # Initial state probabilities
+model.transmat_ = np.full((n_states, n_states), 1 / n_states)  # Transition probabilities
+model.emissionprob_ = np.random.dirichlet(np.ones(n_observations), n_states)  # Emission probabilities
 
-    id_seq = {}
-    dna_strand = ""
-    current_id= None
+# Define the nucleotide encoding
+nucleotide_map = {'A': 0, 'T': 1, 'C': 2, 'G': 3}
 
-    for line in lines:
-        match = re.match(r"^>(Rosalind_[0-9]{4})$", line)
-        if match:
-            if current_id:
-                id_seq[current_id] = dna_strand
-                dna_strand = ""
+dna_strand = input_file('rosalind_orf.txt')
+# Encode the sequence
+encoded_sequence = np.array([nucleotide_map[nuc] for nuc in dna_strand]).reshape(-1, 1)
 
-            current_id = match.group(1)
-        else:
-            dna_strand += line
-    if current_id:
-        id_seq[current_id] = dna_strand
-    return id_seq
+model.fit(encoded_sequence, len(encoded_sequence))
 
-def adjacent_matrix(id_seq, k):
+state_names = {0: "A", 1: "T", 2: "C", 3: "G", 4: "A+", 5: "T+", 6: "C+", 7: "G+"}
 
-    id_seq1 = id_seq
-    adjacent_strand = { key: [] for key in id_seq1}
+# Convert the transition matrix to a DataFrame for easy viewing with named rows/columns
+transition_df = pd.DataFrame(model.transmat_, index=[state_names[i] for i in range(n_states)],
+                             columns=[state_names[i] for i in range(n_states)])
+print("Transition matrix with nucleotide names:\n", transition_df)
 
-    id_list = list(adjacent_strand.keys())
-
-    for i in range(0, len(id_list)):
-        for j in  range(i+1, len(id_list)):
-            seq_id1 = id_list[i]
-            seq_id2 = id_list[j]
-            seq_1 = id_seq1[seq_id1]
-            seq_2 = id_seq1[seq_id2]
-
-            if(seq_1[-k:] == seq_2[:k]):
-               adjacent_strand[seq_id1].append(seq_id2)
-            if seq_1[:k] == seq_2[-k:]:
-              adjacent_strand[seq_id2].append(seq_id1)
-
-    return adjacent_strand
-
-def main():
-    file_name = 'rosalind_grph (10).txt'  # replace with your file name
-    k = 3  # replace with your k value
-
-    lines = input_file(file_name)
-    id_seq = dictionnary(lines)
-    adjacent_strand = adjacent_matrix(id_seq, k)
-
-    for key, value in adjacent_strand.items():
-        for pair in value:
-            print(f"{key} {pair}")
-
-main()
+# Convert the emission matrix to a DataFrame for easy viewing
+emission_df = pd.DataFrame(model.emissionprob_, index=[state_names[i] for i in range(n_states)],
+                           columns=["A", "T", "C", "G"])
+print("Emission matrix with nucleotide names:\n", emission_df)

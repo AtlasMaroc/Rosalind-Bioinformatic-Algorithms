@@ -7,8 +7,8 @@ by the recurrence relation of the Fibonacci numbers. The months after this,
 i.e. when n > m, can be described by the following formula:
 Fn = Fn-1 + Fn-2 - Fn-(m+1)
 """
-n = 6
-m = 3
+n = 83
+m = 20
 bunnies = [1, 1]
 months = 2
 while months < n:
